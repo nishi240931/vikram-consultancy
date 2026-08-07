@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 20% 97%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 220 70% 14%;
+    --primary-foreground: 43 65% 52%;
+
+    --secondary: 43 65% 52%;
+    --secondary-foreground: 220 70% 14%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 43 65% 85%;
+    --accent-foreground: 220 70% 14%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 43 65% 52%;
+
+    --radius: 0.75rem;
+
+    /* Custom Design System Tokens */
+    --brand-navy-dark: #0A192F;
+    --brand-navy-main: #0B1B3D;
+    --brand-navy-light: #162C5B;
+    --brand-gold-primary: #D4AF37;
+    --brand-gold-warm: #C5A059;
+    --brand-gold-light: #F4E8C1;
+  }
+
+  .dark {
+    --background: 220 70% 10%;
+    --foreground: 210 40% 98%;
+
+    --card: 220 60% 14%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 220 60% 14%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 43 65% 52%;
+    --primary-foreground: 220 70% 14%;
+
+    --secondary: 220 70% 14%;
+    --secondary-foreground: 43 65% 52%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 43 65% 52%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+}
+
+/* Glassmorphism Classes */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(10, 25, 47, 0.08);
+}
+
+.dark .glass-card {
+  background: rgba(10, 25, 47, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+}

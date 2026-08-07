@@ -1,0 +1,405 @@
+// Prisma Schema for VIKRAM EDU CONSULTANTS — Production Study Abroad Platform
+// Database: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum Role {
+  STUDENT
+  COUNSELLOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum DegreeLevel {
+  BACHELORS
+  MASTERS
+  DOCTORATE
+  DIPLOMA
+  POSTGRADUATE_CERTIFICATE
+}
+
+enum ApplicationStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  OFFER_ISSUED
+  VISA_PROCESSING
+  VISA_APPROVED
+  ENROLLED
+  REJECTED
+}
+
+enum DocumentType {
+  PASSPORT
+  TRANSCRIPT
+  SOP
+  LOR
+  RESUME
+  FINANCIAL_STATEMENT
+  TEST_SCORE
+  OTHER
+}
+
+enum DocumentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum NotificationType {
+  SYSTEM
+  APPLICATION_UPDATE
+  APPOINTMENT_REMINDER
+  DOCUMENT_VERIFICATION
+  GENERAL
+}
+
+enum ScholarshipType {
+  FULL_TUITION
+  PARTIAL_TUITION
+  STIPEND
+  ONE_TIME_GRANT
+}
+
+enum CountryStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum UniversityStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// ==========================================
+// MODELS
+// ==========================================
+
+model User {
+  id              String      @id @default(cuid())
+  clerkUserId     String      @unique
+  email           String      @unique
+  role            Role        @default(STUDENT)
+  firstName       String?
+  lastName        String?
+  phone           String?
+  avatarUrl       String?
+  gender          Gender?
+  targetCountry   String?
+  gpa             Float?
+  budgetMax       Float?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  counsellorProfile      CounsellorProfile?
+  studentApplications    Application[]       @relation("StudentApplications")
+  counsellorApplications Application[]       @relation("CounsellorApplications")
+  documents              Document[]
+  studentAppointments    Appointment[]       @relation("StudentAppointments")
+  counsellorAppointments Appointment[]       @relation("CounsellorAppointments")
+  notifications          Notification[]
+  blogs                  Blog[]
+  reviews                Review[]
+
+  @@index([clerkUserId])
+  @@index([email])
+  @@index([role])
+}
+
+model CounsellorProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization  String[]
+  bio             String?
+  yearsExperience Int      @default(0)
+  rating          Float    @default(5.0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Country {
+  id                  String        @id @default(cuid())
+  name                String
+  slug                String        @unique
+  code                String        @unique
+  currency            String
+  postStudyWorkYears  Int           @default(2)
+  avgCostOfLivingYear Float         @default(0.0)
+  visaSuccessRate     Float         @default(95.0)
+  flagUrl             String?
+  heroImageUrl        String?
+  description         String?
+  status              CountryStatus @default(PUBLISHED)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  universities        University[]
+  scholarships        Scholarship[]
+
+  @@index([slug])
+  @@index([status])
+}
+
+model University {
+  id                String           @id @default(cuid())
+  countryId         String
+  country           Country          @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  name              String
+  slug              String           @unique
+  logoUrl           String?
+  coverImageUrl     String?
+  rankingGlobal     Int?
+  rankingNational   Int?
+  acceptanceRate    Float?
+  avgTuitionFeeYear Float?
+  city              String
+  websiteUrl        String?
+  overview          String?
+  status            UniversityStatus @default(PUBLISHED)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  courses           Course[]
+  scholarships      Scholarship[]
+  reviews           Review[]
+
+  @@index([countryId])
+  @@index([slug])
+  @@index([rankingGlobal])
+  @@index([status])
+}
+
+model Course {
+  id              String      @id @default(cuid())
+  universityId    String
+  university      University  @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  name            String
+  slug            String      @unique
+  degreeLevel     DegreeLevel
+  majorCategory   String
+  durationMonths  Int
+  tuitionFeeTotal Float
+  currency        String      @default("USD")
+  intakeSemesters String[]
+  ieltsMinScore   Float?
+  greRequired     Boolean     @default(false)
+  overview        String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  applications    Application[]
+
+  @@index([universityId])
+  @@index([degreeLevel])
+  @@index([majorCategory])
+  @@index([slug])
+}
+
+model Scholarship {
+  id                  String          @id @default(cuid())
+  universityId        String?
+  university          University?     @relation(fields: [universityId], references: [id], onDelete: SetNull)
+  countryId           String
+  country             Country         @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  title               String
+  slug                String          @unique
+  type                ScholarshipType
+  amount              Float
+  currency            String          @default("USD")
+  coverageDetails     String?
+  eligibilityCriteria String?
+  deadline            DateTime?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  @@index([universityId])
+  @@index([countryId])
+  @@index([type])
+  @@index([slug])
+}
+
+model Application {
+  id           String            @id @default(cuid())
+  studentId    String
+  student      User              @relation("StudentApplications", fields: [studentId], references: [id], onDelete: Cascade)
+  courseId     String
+  course       Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  counsellorId String?
+  counsellor   User?             @relation("CounsellorApplications", fields: [counsellorId], references: [id], onDelete: SetNull)
+  status       ApplicationStatus @default(DRAFT)
+  notes        String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  stages       ApplicationStage[]
+  documents    Document[]
+
+  @@index([studentId])
+  @@index([courseId])
+  @@index([counsellorId])
+  @@index([status])
+}
+
+model ApplicationStage {
+  id              String            @id @default(cuid())
+  applicationId   String
+  application     Application       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  status          ApplicationStatus
+  comment         String?
+  updatedByUserId String?
+  createdAt       DateTime          @default(now())
+
+  @@index([applicationId])
+}
+
+model Document {
+  id               String         @id @default(cuid())
+  studentId        String
+  student          User           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  applicationId    String?
+  application      Application?   @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  title            String
+  type             DocumentType
+  fileUrl          String
+  fileSize         Int
+  status           DocumentStatus @default(PENDING)
+  verifiedByUserId String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([studentId])
+  @@index([applicationId])
+  @@index([status])
+}
+
+model Appointment {
+  id              String            @id @default(cuid())
+  studentId       String
+  student         User              @relation("StudentAppointments", fields: [studentId], references: [id], onDelete: Cascade)
+  counsellorId    String
+  counsellor      User              @relation("CounsellorAppointments", fields: [counsellorId], references: [id], onDelete: Cascade)
+  scheduledAt     DateTime
+  durationMinutes Int               @default(30)
+  meetingUrl      String?
+  status          AppointmentStatus @default(SCHEDULED)
+  notes           String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([studentId])
+  @@index([counsellorId])
+  @@index([scheduledAt])
+  @@index([status])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      NotificationType @default(GENERAL)
+  isRead    Boolean          @default(false)
+  linkUrl   String?
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+model Blog {
+  id            String     @id @default(cuid())
+  authorId      String
+  author        User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title         String
+  slug          String     @unique
+  excerpt       String
+  content       String
+  coverImageUrl String?
+  category      String
+  status        BlogStatus @default(DRAFT)
+  publishedAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([category])
+  @@index([status])
+}
+
+model Event {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  description  String
+  eventDate    DateTime
+  location     String
+  meetingUrl   String?
+  maxAttendees Int      @default(100)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([slug])
+  @@index([eventDate])
+}
+
+model Testimonial {
+  id             String   @id @default(cuid())
+  studentName    String
+  universityName String
+  courseName     String
+  countryName    String
+  rating         Float    @default(5.0)
+  reviewText     String
+  videoUrl       String?
+  avatarUrl      String?
+  isFeatured     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}
+
+model Review {
+  id           String     @id @default(cuid())
+  universityId String
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  rating       Float
+  comment      String
+  createdAt    DateTime   @default(now())
+
+  @@index([universityId])
+}
