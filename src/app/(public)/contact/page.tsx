@@ -1,16 +1,66 @@
-import React from "react";
-import type { Metadata } from "next";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
-import { Phone, Mail, MapPin, Clock, Send, Calendar } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { Card, Badge, Button } from "@/design-system";
 import { APP_CONFIG } from "@/config/app.config";
 
-export const metadata: Metadata = {
-  title: "Contact Us | Vikram Edu Consultants",
-  description: "Get in touch with Vikram Edu Consultants. Visit our branch offices or book a virtual 1-on-1 consultation.",
-};
-
 export default function ContactPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [targetDestination, setTargetDestination] = useState("United States");
+  const [message, setMessage] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSuccessMessage(null);
+    setErrorMessage(null);
+
+    if (!name || !email || !message) {
+      setErrorMessage("Please fill in all required fields.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          targetDestination,
+          message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        setErrorMessage(data.error || "Failed to submit inquiry. Please try again.");
+      } else {
+        setSuccessMessage(data.message || "Thank you! Your inquiry has been submitted successfully.");
+        // Clear form fields after success
+        setName("");
+        setEmail("");
+        setPhone("");
+        setMessage("");
+      }
+    } catch (err) {
+      setErrorMessage("Network error occurred. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-[#FAF9F5]">
       {/* Hero Section */}
@@ -83,28 +133,77 @@ export default function ContactPage() {
                 <p className="text-xs text-slate-500">Fill out your details and an education advisor will call you within 2 business hours.</p>
               </div>
 
-              <form className="flex flex-col gap-4">
+              {successMessage && (
+                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="font-bold text-sm block">Inquiry Submitted!</strong>
+                    <span>{successMessage}</span>
+                  </div>
+                </div>
+              )}
+
+              {errorMessage && (
+                <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="font-bold text-sm block">Submission Failed</strong>
+                    <span>{errorMessage}</span>
+                  </div>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5 text-xs">
                     <label className="font-bold text-slate-700">Full Name *</label>
-                    <input type="text" placeholder="e.g. Ananya Reddy" className="p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#D4AF37]" required />
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="e.g. Ananya Reddy"
+                      className="p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#D4AF37]"
+                      required
+                      disabled={loading}
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1.5 text-xs">
                     <label className="font-bold text-slate-700">Email Address *</label>
-                    <input type="email" placeholder="ananya@example.com" className="p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#D4AF37]" required />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="ananya@example.com"
+                      className="p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#D4AF37]"
+                      required
+                      disabled={loading}
+                    />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5 text-xs">
                     <label className="font-bold text-slate-700">Phone Number *</label>
-                    <input type="tel" placeholder="+91 98765 43210" className="p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#D4AF37]" required />
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+91 98765 43210"
+                      className="p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#D4AF37]"
+                      required
+                      disabled={loading}
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1.5 text-xs">
                     <label className="font-bold text-slate-700">Target Destination</label>
-                    <select className="p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#D4AF37]">
+                    <select
+                      value={targetDestination}
+                      onChange={(e) => setTargetDestination(e.target.value)}
+                      className="p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#D4AF37]"
+                      disabled={loading}
+                    >
                       <option>United States</option>
                       <option>United Kingdom</option>
                       <option>Canada</option>
@@ -116,11 +215,26 @@ export default function ContactPage() {
 
                 <div className="flex flex-col gap-1.5 text-xs">
                   <label className="font-bold text-slate-700">Your Inquiry / Message *</label>
-                  <textarea rows={4} placeholder="Tell us about your target degree, GPA, budget, or preferred intake..." className="p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#D4AF37]" required />
+                  <textarea
+                    rows={4}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Tell us about your target degree, GPA, budget, or preferred intake..."
+                    className="p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#D4AF37]"
+                    required
+                    disabled={loading}
+                  />
                 </div>
 
-                <Button variant="primary" size="md" className="w-full justify-center" rightIcon={<Send className="w-4 h-4" />}>
-                  Submit Inquiry
+                <Button
+                  variant="primary"
+                  size="md"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full justify-center"
+                  rightIcon={loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                >
+                  {loading ? "Submitting Inquiry..." : "Submit Inquiry"}
                 </Button>
               </form>
             </Card>

@@ -403,3 +403,18 @@ model Review {
 
   @@index([universityId])
 }
+
+model ContactInquiry {
+  id                String   @id @default(cuid())
+  name              String
+  email             String
+  phone             String?
+  targetDestination String?
+  message           String
+  isResolved        Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([email])
+  @@index([createdAt])
+}

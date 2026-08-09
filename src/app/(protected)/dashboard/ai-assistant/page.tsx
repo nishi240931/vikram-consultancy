@@ -6,6 +6,8 @@ import { AIRecommendationCard } from "@/components/ai/AIRecommendationCard";
 import { EligibilityResult } from "@/components/ai/EligibilityResult";
 import { SOPReviewCard } from "@/components/ai/SOPReviewCard";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "VIKRAM AI Studio | Study Abroad Advisor",
   description: "AI-powered university recommendations, SOP reviews, eligibility checks, and 24/7 assistant.",

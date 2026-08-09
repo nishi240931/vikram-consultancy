@@ -48,7 +48,7 @@ export const FEATURED_COUNTRIES_DATA: FeaturedCountry[] = [
     postStudyWork: "3 Years PGWP",
     avgCost: "CAD 18,000 - 35,000 / yr",
     topCities: ["Toronto", "Vancouver", "Montreal", "Ottawa"],
-    heroImage: "https://images.unsplash.com/photo-1517935703635-27c56d651ffa?auto=format&fit=crop&w=800&q=80",
+    heroImage: "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&w=800&q=80",
     description: "Welcoming immigration pathways, high quality of life, and generous post-graduation work permits.",
     popularMajors: ["Software Engineering", "Management", "Biotechnology", "Fintech"],
   },

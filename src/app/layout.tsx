@@ -55,6 +55,14 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${inter.variable} ${outfit.variable} ${jakarta.variable}`}
       >
+        <head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(SEO_CONFIG.organizationSchema),
+            }}
+          />
+        </head>
         <body className="min-h-screen bg-background font-body text-foreground antialiased">
           <ThemeProvider
             attribute="class"
