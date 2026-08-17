@@ -1,9 +1,6 @@
 import React from "react";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { UniversityCard } from "@/components/sections/UniversityCard";
-import { Button } from "@/design-system";
 
 export interface CountryUniversitiesPreviewProps {
   countryName: string;
@@ -23,14 +20,17 @@ export const CountryUniversitiesPreview: React.FC<CountryUniversitiesPreviewProp
   countryName,
   universities,
 }) => {
-  if (!universities || universities.length === 0) return null;
+  // Enforce EXACTLY 6 universities for the destination
+  const topSixUniversities = (universities || []).slice(0, 6);
+
+  if (topSixUniversities.length === 0) return null;
 
   return (
     <section id="universities" className="py-16 bg-[#FAF9F5] border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
-          badge="Institutional Partners"
-          title={`Top Universities in`}
+          badge="Partner Institutions"
+          title={`Top-Ranked Global Partner Universities in`}
           highlightText={countryName}
           subtitle={`Explore world-ranked institutions, course offerings, and entry requirements in ${countryName}.`}
           align="center"
@@ -38,7 +38,7 @@ export const CountryUniversitiesPreview: React.FC<CountryUniversitiesPreviewProp
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {universities.map((uni) => (
+          {topSixUniversities.map((uni) => (
             <UniversityCard
               key={uni.id}
               university={{
@@ -58,14 +58,6 @@ export const CountryUniversitiesPreview: React.FC<CountryUniversitiesPreviewProp
               }}
             />
           ))}
-        </div>
-
-        <div className="flex justify-center mt-10">
-          <Link href={`/universities?country=${countryName}`}>
-            <Button variant="outline" size="md" rightIcon={<ArrowRight className="w-4 h-4" />}>
-              View All Universities in {countryName}
-            </Button>
-          </Link>
         </div>
       </div>
     </section>

@@ -65,9 +65,9 @@ export const UniversityHero: React.FC<UniversityHeroProps> = ({ university }) =>
           </div>
 
           <div className="flex items-center gap-3">
-            <Link href="/appointments">
+            <Link href="/book-consultation">
               <Button variant="primary" size="lg" leftIcon={<Calendar className="w-4 h-4" />}>
-                Apply to {university.name}
+                Apply with Vikram Edu
               </Button>
             </Link>
             {university.websiteUrl && (

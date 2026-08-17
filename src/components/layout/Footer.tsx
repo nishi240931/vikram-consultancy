@@ -1,41 +1,60 @@
 import React from "react";
 import Link from "next/link";
-import { Phone, Mail, Clock, Globe, ArrowUpRight } from "lucide-react";
-import { Logo } from "@/design-system";
+import { Phone, Mail, MapPin, ArrowRight, ArrowUpRight, Globe } from "lucide-react";
+import { Logo, Button } from "@/design-system";
 import { APP_CONFIG } from "@/config/app.config";
 
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-[#0A192F] text-white pt-16 pb-12 border-t border-[#D4AF37]/20 relative overflow-hidden">
-      {/* Background Decorative Glow */}
+      {/* Ambient Gold Glow Header Accent */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-gradient-to-b from-[#D4AF37]/10 to-transparent pointer-events-none blur-3xl" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800">
-          {/* Brand Info */}
-          <div className="lg:col-span-2 flex flex-col gap-5">
+        {/* 4-Column Responsive Footer Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
+          
+          {/* COLUMN 1 — BRAND & HEADQUARTERS ADDRESS */}
+          <div className="flex flex-col gap-5">
             <Logo size="lg" theme="dark" />
-            <p className="text-slate-400 text-sm leading-relaxed max-w-md">
-              {APP_CONFIG.description}
+            <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
+              Your trusted partner for studying abroad, providing personalized guidance for universities, courses, applications, visas, and your complete overseas education journey.
             </p>
 
-            <div className="flex flex-col gap-2 pt-2 text-xs text-slate-300">
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#D4AF37]" />
-                <span>Call Us: {APP_CONFIG.contact.phone}</span>
+            <div className="flex flex-col gap-3 pt-2 text-xs text-slate-300">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0">
+                  <Phone className="w-3.5 h-3.5" />
+                </div>
+                <span>
+                  <strong className="text-white font-medium">Phone:</strong> {APP_CONFIG.contact.formattedPhone}
+                </span>
               </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#D4AF37]" />
-                <span>Admissions: {APP_CONFIG.contact.email}</span>
+
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0">
+                  <Mail className="w-3.5 h-3.5" />
+                </div>
+                <span>
+                  <strong className="text-white font-medium">Email:</strong> {APP_CONFIG.contact.email}
+                </span>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#D4AF37]" />
-                <span>Mon - Sat: 9:30 AM - 6:30 PM (IST)</span>
+
+              <div className="flex items-start gap-2.5">
+                <div className="w-7 h-7 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0 mt-0.5">
+                  <MapPin className="w-3.5 h-3.5" />
+                </div>
+                <div className="flex flex-col">
+                  <strong className="text-white font-medium">Headquarters:</strong>
+                  <span className="text-slate-400 leading-snug">
+                    FF 1, Seetharama Residency, Yenamalakuduru, Vijayawada, Andhra Pradesh – 520007
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* COLUMN 2 — NAVIGATION */}
           <div className="flex flex-col gap-4">
             <h4 className="text-sm font-bold uppercase tracking-wider text-[#D4AF37]">
               Navigation
@@ -74,17 +93,17 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Popular Destinations */}
+          {/* COLUMN 3 — DESTINATIONS (7 COUNTRIES - NO GERMANY) */}
           <div className="flex flex-col gap-4">
             <h4 className="text-sm font-bold uppercase tracking-wider text-[#D4AF37]">
               Destinations
             </h4>
-            <ul className="flex flex-col gap-2.5 text-sm text-slate-300">
+            <ul className="flex flex-col gap-2 text-sm text-slate-300">
               {APP_CONFIG.destinations.map((dest) => (
                 <li key={dest.slug}>
                   <Link
                     href={`/destinations/${dest.slug}`}
-                    className="hover:text-[#D4AF37] transition-colors flex items-center justify-between group"
+                    className="hover:text-[#D4AF37] transition-colors flex items-center justify-between group py-0.5"
                   >
                     <span>
                       {dest.flag} Study in {dest.name}
@@ -96,23 +115,41 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Office Branches */}
-          <div className="flex flex-col gap-4">
+          {/* COLUMN 4 — NEED HELP / CONTACT CTA */}
+          <div className="flex flex-col gap-5">
             <h4 className="text-sm font-bold uppercase tracking-wider text-[#D4AF37]">
-              Branch Offices
+              Need Help?
             </h4>
-            <div className="flex flex-col gap-3 text-xs text-slate-300">
-              {APP_CONFIG.branches.map((branch) => (
-                <div key={branch.city} className="flex flex-col gap-1 border-l-2 border-[#D4AF37]/50 pl-3">
-                  <span className="font-bold text-white">{branch.city}</span>
-                  <span className="text-slate-400 line-clamp-2">{branch.address}</span>
-                </div>
-              ))}
+            <p className="text-slate-300 text-sm leading-relaxed">
+              Our team is ready to help you plan your dream study-abroad journey.
+            </p>
+
+            <div className="flex flex-col gap-2.5 text-xs text-slate-300 bg-white/5 p-4 rounded-xl border border-white/10">
+              <div className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <a href={`tel:${APP_CONFIG.contact.whatsapp}`} className="hover:text-[#D4AF37] font-semibold text-white transition-colors">
+                  {APP_CONFIG.contact.formattedPhone}
+                </a>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <a href={`mailto:${APP_CONFIG.contact.email}`} className="hover:text-[#D4AF37] transition-colors">
+                  {APP_CONFIG.contact.email}
+                </a>
+              </div>
             </div>
+
+            <Link href="/book-consultation" className="w-full">
+              <Button variant="primary" size="md" className="w-full justify-center">
+                Get Free Counselling &rarr;
+              </Button>
+            </Link>
           </div>
+
         </div>
 
-        {/* Bottom Bar */}
+        {/* BOTTOM BAR */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <p>© {new Date().getFullYear()} {APP_CONFIG.legalName}. All rights reserved.</p>
           <div className="flex items-center gap-6">
@@ -122,7 +159,7 @@ export const Footer: React.FC = () => {
             <Link href="/terms" className="hover:text-white transition-colors">
               Terms of Service
             </Link>
-            <div className="flex items-center gap-1 text-[#D4AF37]">
+            <div className="flex items-center gap-1.5 text-[#D4AF37] font-medium">
               <Globe className="w-3.5 h-3.5" /> Global Education Excellence
             </div>
           </div>

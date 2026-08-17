@@ -31,7 +31,7 @@ export const CourseCTA: React.FC<CourseCTAProps> = ({ courseName }) => {
             </div>
 
             <div className="lg:col-span-4 flex flex-col items-center lg:items-end justify-center gap-3">
-              <Link href="/appointments">
+              <Link href="/book-consultation">
                 <Button
                   variant="primary"
                   size="lg"

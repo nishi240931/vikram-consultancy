@@ -87,9 +87,9 @@ export const CourseHero: React.FC<CourseHeroProps> = ({ course }) => {
 
           {/* Action CTAs */}
           <div className="flex flex-wrap items-center gap-4 pt-4">
-            <Link href="/appointments">
+            <Link href="/book-consultation">
               <Button variant="primary" size="lg" leftIcon={<Calendar className="w-4 h-4" />}>
-                Check Admit Eligibility
+                Apply for Course
               </Button>
             </Link>
             <Link href="#requirements">

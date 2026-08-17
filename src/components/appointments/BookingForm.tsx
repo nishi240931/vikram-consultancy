@@ -186,7 +186,7 @@ export const BookingForm: React.FC = () => {
           <Input
             label="Phone Number (WhatsApp) *"
             type="tel"
-            placeholder="+91 98765 43210"
+            placeholder="+91 98852 98821"
             value={studentPhone}
             onChange={(e) => setStudentPhone(e.target.value)}
             leftIcon={<Phone className="w-4 h-4 text-slate-400" />}

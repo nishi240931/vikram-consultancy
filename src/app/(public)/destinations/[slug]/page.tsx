@@ -46,7 +46,8 @@ export default async function CountryPage({ params }: CountryPageProps) {
     slug: country.slug,
   });
 
-  const formattedUniversities = (country.universities || []).map((u) => ({
+  // Strictly cap at exactly 6 universities for the destination
+  const formattedUniversities = (country.universities || []).slice(0, 6).map((u) => ({
     id: u.id || "uni-id",
     name: u.name || "University Name",
     slug: u.slug || "university-slug",
@@ -71,9 +72,13 @@ export default async function CountryPage({ params }: CountryPageProps) {
           flagUrl: country.flagUrl,
           heroImageUrl: country.heroImageUrl,
           postStudyWorkYears: country.postStudyWorkYears,
+          postStudyWorkTitle: country.postStudyWorkTitle,
+          postStudyWorkSubtitle: country.postStudyWorkSubtitle,
           visaSuccessRate: country.visaSuccessRate,
+          visaSuccessRateText: country.visaSuccessRateText,
           currency: country.currency,
           avgCostOfLivingYear: country.avgCostOfLivingYear,
+          avgCostFormatted: country.avgCostFormatted,
           description: country.description,
         }}
       />

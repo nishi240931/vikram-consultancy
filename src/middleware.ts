@@ -10,9 +10,16 @@ const isPublicRoute = createRouteMatcher([
   "/events(.*)",
   "/about(.*)",
   "/contact(.*)",
+  "/services(.*)",
+  "/book-consultation(.*)",
+  "/privacy(.*)",
+  "/terms(.*)",
+  "/cookies(.*)",
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",
+  "/api/contact(.*)",
+  "/api/appointments(.*)",
 ]);
 
 const isStudentRoute = createRouteMatcher(["/dashboard(.*)"]);

@@ -1,18 +1,35 @@
 import React from "react";
-import { CheckCircle2, Globe, Building2, Landmark } from "lucide-react";
+import { CheckCircle2, Globe, Building2, Landmark, Award } from "lucide-react";
 import { Card } from "@/design-system";
 
 export interface CountryOverviewProps {
   countryName: string;
   currency: string;
   postStudyWorkYears: number;
+  scholarships?: string;
 }
+
+const COUNTRY_SCHOLARSHIP_MAP: Record<string, string> = {
+  "United States": "Merit-based, Ivy League & Fulbright Grants Available",
+  "United Kingdom": "Chevening, GREAT & University Bursaries",
+  "Canada": "Vanier, Entrance Grants & TA/RA Support",
+  "Australia": "Australia Awards & Destination Australia Bursaries",
+  "New Zealand": "Manaaki NZ & University Excellence Grants",
+  "South Korea": "GKS (Global Korea Scholarship) & Uni Grants",
+  "Japan": "MEXT Government & JASSO Scholarships",
+};
 
 export const CountryOverview: React.FC<CountryOverviewProps> = ({
   countryName,
   currency,
   postStudyWorkYears,
+  scholarships,
 }) => {
+  const scholarshipInfo =
+    scholarships ||
+    COUNTRY_SCHOLARSHIP_MAP[countryName] ||
+    "Merit-based, university & government scholarships available";
+
   return (
     <section className="py-16 bg-white border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,39 +68,56 @@ export const CountryOverview: React.FC<CountryOverviewProps> = ({
             </div>
           </div>
 
+          {/* Key Destination Facts (EXACTLY 4 FACTS) */}
           <div className="lg:col-span-5">
-            <Card variant="glass" padding="lg" className="border-[#D4AF37]/30 shadow-xl flex flex-col gap-6">
+            <Card variant="glass" padding="lg" className="border-[#D4AF37]/30 shadow-xl flex flex-col gap-5">
               <h3 className="text-xl font-bold text-[#0B1B3D] font-['Outfit'] border-b border-slate-200 pb-3">
                 Key Destination Facts
               </h3>
 
+              {/* 1. Official Currency */}
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-[#0B1B3D]/5 text-[#D4AF37]">
+                <div className="p-3 rounded-xl bg-[#0B1B3D]/5 text-[#D4AF37] flex-shrink-0">
                   <Globe className="w-6 h-6" />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col min-w-0">
                   <span className="text-xs text-slate-400 font-medium">Official Currency</span>
-                  <span className="font-bold text-slate-800 text-sm">{currency}</span>
+                  <span className="font-bold text-slate-800 text-sm truncate">{currency}</span>
                 </div>
               </div>
 
+              {/* 2. Primary Intakes */}
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-[#0B1B3D]/5 text-[#D4AF37]">
+                <div className="p-3 rounded-xl bg-[#0B1B3D]/5 text-[#D4AF37] flex-shrink-0">
                   <Building2 className="w-6 h-6" />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col min-w-0">
                   <span className="text-xs text-slate-400 font-medium">Primary Intakes</span>
-                  <span className="font-bold text-slate-800 text-sm">Fall (Sept) & Spring (Jan)</span>
+                  <span className="font-bold text-slate-800 text-sm">Fall (Sept) &amp; Spring (Jan)</span>
                 </div>
               </div>
 
+              {/* 3. Language Requirement */}
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-[#0B1B3D]/5 text-[#D4AF37]">
+                <div className="p-3 rounded-xl bg-[#0B1B3D]/5 text-[#D4AF37] flex-shrink-0">
                   <Landmark className="w-6 h-6" />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col min-w-0">
                   <span className="text-xs text-slate-400 font-medium">Language Requirement</span>
                   <span className="font-bold text-slate-800 text-sm">IELTS / TOEFL / PTE (Waivers Available)</span>
+                </div>
+              </div>
+
+              {/* 4. Scholarship Opportunities (NEW) */}
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-xl bg-[#0B1B3D]/5 text-[#D4AF37] flex-shrink-0 mt-0.5">
+                  <Award className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-xs text-slate-400 font-medium">Scholarship Opportunities</span>
+                  <span className="font-bold text-slate-800 text-sm leading-snug break-words">
+                    {scholarshipInfo}
+                  </span>
                 </div>
               </div>
             </Card>

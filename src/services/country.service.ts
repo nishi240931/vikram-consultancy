@@ -7,6 +7,10 @@ import { logger } from "@/lib/logger";
 export interface CountryWithDetails extends Country {
   universities?: Partial<University>[];
   scholarships?: Partial<Scholarship>[];
+  postStudyWorkTitle?: string;
+  postStudyWorkSubtitle?: string;
+  visaSuccessRateText?: string;
+  avgCostFormatted?: string;
 }
 
 export class CountryService {
@@ -17,7 +21,9 @@ export class CountryService {
     try {
       const dbCountries = await countryRepository.getAllCountries("PUBLISHED");
       if (dbCountries.length > 0) {
-        return dbCountries;
+        return dbCountries
+          .filter((c) => c.slug !== "germany" && c.code !== "DE")
+          .map((dbc) => this.enrichCountryModel(dbc as CountryWithDetails));
       }
     } catch (error) {
       logger.warn("Failed to fetch countries from database, executing seed fallback", { error });
@@ -32,7 +38,7 @@ export class CountryService {
   async getCountryBySlug(slug: string): Promise<CountryWithDetails | null> {
     try {
       const dbCountry = await countryRepository.getCountryBySlug(slug);
-      if (dbCountry) return dbCountry as CountryWithDetails;
+      if (dbCountry) return this.enrichCountryModel(dbCountry as CountryWithDetails);
     } catch (error) {
       logger.warn(`Failed to fetch country '${slug}' from database, executing seed fallback`, { error });
     }
@@ -49,7 +55,9 @@ export class CountryService {
   async searchCountries(query: string): Promise<CountryWithDetails[]> {
     try {
       const dbCountries = await countryRepository.searchCountries(query);
-      if (dbCountries.length > 0) return dbCountries;
+      if (dbCountries.length > 0) {
+        return dbCountries.map((dbc) => this.enrichCountryModel(dbc as CountryWithDetails));
+      }
     } catch (error) {
       logger.warn(`Search for countries with query '${query}' failed, checking fallback`, { error });
     }
@@ -61,6 +69,19 @@ export class CountryService {
 
   private getFallbackCountries(): CountryWithDetails[] {
     return FEATURED_COUNTRIES_DATA.map((c) => this.mapFallbackToCountryModel(c));
+  }
+
+  private enrichCountryModel(c: CountryWithDetails): CountryWithDetails {
+    const featured = FEATURED_COUNTRIES_DATA.find((fc) => fc.code === c.code || fc.slug === c.slug);
+    if (!featured) return c;
+
+    return {
+      ...c,
+      postStudyWorkTitle: featured.postStudyWorkDetail.title,
+      postStudyWorkSubtitle: featured.postStudyWorkDetail.subtitle,
+      visaSuccessRateText: featured.visaSuccessRateText,
+      avgCostFormatted: featured.avgCost,
+    };
   }
 
   private mapFallbackToCountryModel(c: FeaturedCountry): CountryWithDetails {
@@ -90,6 +111,10 @@ export class CountryService {
       code: c.code,
       currency: c.code === "US" ? "USD" : c.code === "GB" ? "GBP" : c.code === "CA" ? "CAD" : c.code === "AU" ? "AUD" : c.code === "DE" ? "EUR" : "EUR",
       postStudyWorkYears: c.postStudyWork.includes("3") ? 3 : 2,
+      postStudyWorkTitle: c.postStudyWorkDetail.title,
+      postStudyWorkSubtitle: c.postStudyWorkDetail.subtitle,
+      visaSuccessRateText: c.visaSuccessRateText,
+      avgCostFormatted: c.avgCost,
       avgCostOfLivingYear: 15000,
       visaSuccessRate: 99.2,
       flagUrl: c.flag,

@@ -44,13 +44,13 @@ export const CtaSection: React.FC = () => {
                   <CheckCircle className="w-4 h-4 text-[#D4AF37]" /> No Commitment Required
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle className="w-4 h-4 text-[#D4AF37]" /> Virtual or In-Person (Hyderabad/Bengaluru/Mumbai)
+                  <CheckCircle className="w-4 h-4 text-[#D4AF37]" /> Virtual or In-Person (Vijayawada Headquarters)
                 </span>
               </div>
             </div>
 
             <div className="lg:col-span-4 flex flex-col items-center lg:items-end justify-center gap-4">
-              <Link href="/appointments" className="w-full sm:w-auto">
+              <Link href="/book-consultation" className="w-full sm:w-auto">
                 <Button
                   variant="primary"
                   size="xl"
@@ -63,11 +63,11 @@ export const CtaSection: React.FC = () => {
               </Link>
 
               <a
-                href={`tel:${APP_CONFIG.contact.phone}`}
+                href={`tel:${APP_CONFIG.contact.whatsapp}`}
                 className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-[#D4AF37] transition-colors"
               >
                 <PhoneCall className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span>Or Call Us Directly: {APP_CONFIG.contact.phone}</span>
+                <span>Or Call Us Directly: {APP_CONFIG.contact.formattedPhone}</span>
               </a>
             </div>
           </div>
